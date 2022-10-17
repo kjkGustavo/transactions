@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Type {
+  CREATOR_SALE
+  AFFILIATE_SALE
+  COMMISSION_PAID
+  COMMISSION_RECEIVED
+}
+
+model Seller {
+  id          Int           @id @default(autoincrement())
+  name        String
+  Product     Product[]
+  Transaction Transaction[]
+}
+
+model Transaction {
+  id        Int      @id @default(autoincrement())
+  type      Type
+  amount    String
+  date      DateTime
+  product   Product  @relation(fields: [productId], references: [id])
+  productId Int
+  seller    Seller   @relation(fields: [sellerId], references: [id])
+  sellerId  Int
+}
+
+model Product {
+  id          Int           @id @default(autoincrement())
+  name        String
+  creator     Seller        @relation(fields: [sellerId], references: [id])
+  sellerId    Int
+  Transaction Transaction[]
+}
