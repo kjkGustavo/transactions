@@ -16,7 +16,7 @@ enum Type {
 
 model Seller {
   id          Int           @id @default(autoincrement())
-  name        String
+  name        String        @unique
   Product     Product[]
   Transaction Transaction[]
 }
@@ -34,7 +34,7 @@ model Transaction {
 
 model Product {
   id          Int           @id @default(autoincrement())
-  name        String
+  name        String        @unique
   creator     Seller        @relation(fields: [sellerId], references: [id])
   sellerId    Int
   Transaction Transaction[]
