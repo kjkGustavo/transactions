@@ -1,7 +1,7 @@
 import * as trpc from '@trpc/server'
 import { CreateNextContextOptions } from '@trpc/server/adapters/next'
 
-import { prisma } from '../db/client'
+import { prisma } from '../db/prisma'
 
 export const createContext = async (opts?: CreateNextContextOptions) => {
   return {
