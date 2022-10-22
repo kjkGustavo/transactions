@@ -4,9 +4,7 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 
 import { trpc } from '~/utils/trpc'
 
-type FormParams = {
-  thumbnail: File
-}
+type FormParams = { thumbnail: FileList }
 
 function getBase64(file: File): Promise<string | ArrayBuffer | null> {
   return new Promise((resolve, reject) => {
@@ -24,7 +22,7 @@ const Import: NextPage = () => {
   const { register, handleSubmit } = useForm<FormParams>()
 
   const onSubmit: SubmitHandler<FormParams> = async ({ thumbnail }) => {
-    const file = await getBase64(thumbnail)
+    const file = await getBase64(thumbnail[0])
 
     await uploadTransaction({
       transactionFile: file as string

@@ -32,10 +32,12 @@ const Table = <TData,>({ columns, data, isLoading }: TableProps<TData>) => {
           >
             {headerGroup.headers.map((header) => (
               <th key={header.id}>
-                {flexRender(
-                  header.column.columnDef.header,
-                  header.getContext()
-                )}
+                {!header.isPlaceholder
+                  ? flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )
+                  : null}
               </th>
             ))}
           </tr>
