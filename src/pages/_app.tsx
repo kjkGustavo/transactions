@@ -1,15 +1,30 @@
 import { httpBatchLink } from '@trpc/client/links/httpBatchLink'
 import { loggerLink } from '@trpc/client/links/loggerLink'
 import { withTRPC } from '@trpc/next'
-import type { AppProps } from 'next/app'
+import { NextPage } from 'next'
+import type { AppProps, AppType } from 'next/app'
 import superjson from 'superjson'
+import Layout from '../components/Layout'
 import { AppRouter } from '../server/router'
 import '../styles/globals.css'
 import getBaseUrl from '../utils/get-base-url'
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+export type NextPageWithLayout<
+  TProps = Record<string, unknown>,
+  TInitialProps = TProps
+> = NextPage<TProps, TInitialProps> & {
+  getLayout?: (page: React.ReactElement) => React.ReactNode
 }
+
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout
+}
+
+const App = (({ Component, pageProps }: AppPropsWithLayout) => {
+  const getLayout = Component.getLayout ?? ((page) => <Layout>{page}</Layout>)
+
+  return getLayout(<Component {...pageProps} />)
+}) as AppType
 
 export default withTRPC<AppRouter>({
   config() {
@@ -36,4 +51,4 @@ export default withTRPC<AppRouter>({
     }
   },
   ssr: false
-})(MyApp)
+})(App)

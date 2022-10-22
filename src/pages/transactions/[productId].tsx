@@ -1,12 +1,18 @@
 import { ColumnDef } from '@tanstack/react-table'
-import type { NextPage } from 'next'
+import type { GetServerSidePropsContext, NextPage } from 'next'
 import Head from 'next/head'
-import { useRouter } from 'next/router'
 
 import Table from '~/components/Table'
 
-import { Seller, Transaction } from '@prisma/client'
+import { Seller, Transaction, Type as TransactionType } from '@prisma/client'
 import { trpc } from '~/utils/trpc'
+
+const renderType: { [key in TransactionType]: string } = {
+  CREATOR_SALE: 'Venda produtor',
+  AFFILIATE_SALE: 'Venda afiliado',
+  COMMISSION_PAID: 'Comissão paga',
+  COMMISSION_RECEIVED: 'Comissão recebida'
+}
 
 const columns: ColumnDef<
   Transaction & {
@@ -16,7 +22,12 @@ const columns: ColumnDef<
   {
     accessorKey: 'date',
     header: 'Data',
-    cell: ({ getValue }) => new Date(getValue<Date>()).toString()
+    cell: ({ getValue }) =>
+      new Date(getValue<Date>()).toLocaleDateString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      })
   },
   {
     accessorKey: 'seller.name',
@@ -24,19 +35,25 @@ const columns: ColumnDef<
   },
   {
     accessorKey: 'type',
-    header: 'Tipo'
+    header: 'Tipo',
+    cell: ({ getValue }) =>
+      renderType[getValue() as keyof typeof TransactionType]
   },
   {
     accessorKey: 'amount',
     header: 'Quantidade',
-    cell: ({ getValue }) => +getValue<number>()
+    cell: ({ getValue }) => {
+      const formattedValue = +getValue<number>()
+
+      return formattedValue.toLocaleString('pt-br', {
+        style: 'currency',
+        currency: 'BRL'
+      })
+    }
   }
 ]
 
-const ListTransactions: NextPage = () => {
-  const router = useRouter()
-  const { productId } = router.query
-
+const ListTransactions: NextPage = ({ productId }) => {
   const { data, isLoading } = trpc.useQuery([
     'transaction.getAllOfProducts',
     {
@@ -44,35 +61,42 @@ const ListTransactions: NextPage = () => {
     }
   ]) // TODO: on error on transactions
 
-  if (!productId) {
-    router.push('/404')
-    return null
-  } // TODO: Pass to ssr
-
   return (
     <>
       <Head>
         <title>Challenge</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="font-poppins h-screen w-screen">
-        <main className="container mx-auto">
-          <div className="flex justify-between items-center mb-14">
-            <div>
-              <h2 className="font-serif text-3xl font-semibold mb-2">
-                Transações de {'DESENVOLVIMENTO WEB COMPLETO'}
-              </h2>
-              <p className="text-stone-500 font-light">
-                Importe as transações da plataforma
-              </p>
-            </div>
-          </div>
-
-          <Table columns={columns} data={data || []} isLoading={isLoading} />
-        </main>
+      <div className="flex justify-between items-center mb-14">
+        <div>
+          <h2 className="font-serif text-3xl font-semibold mb-2">
+            Transações de {'DESENVOLVIMENTO WEB COMPLETO'}
+          </h2>
+          <p className="text-stone-500 font-light">
+            Importe as transações da plataforma
+          </p>
+        </div>
       </div>
+
+      <Table columns={columns} data={data || []} isLoading={isLoading} />
     </>
   )
 }
 
 export default ListTransactions
+
+export async function getServerSideProps({
+  params
+}: GetServerSidePropsContext) {
+  if (!params?.productId) {
+    return {
+      notFound: true
+    }
+  }
+
+  return {
+    props: {
+      productId: params.productId
+    }
+  }
+}

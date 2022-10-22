@@ -35,25 +35,19 @@ const Import: NextPage = () => {
         <title>Challenge</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="font-poppins h-screen w-screen">
-        <main className="container mx-auto">
-          <div className="flex justify-between items-center mb-14">
-            <div>
-              <h2 className="font-serif text-3xl font-semibold mb-2">
-                Importação
-              </h2>
-              <p className="text-stone-500 font-light">
-                Importe as transações da plataforma
-              </p>
-            </div>
-          </div>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <label>Image: </label>
-            <input type="file" {...register('thumbnail')} />
-            <button type="submit">Enviar</button>
-          </form>
-        </main>
+      <div className="flex justify-between items-center mb-14">
+        <div>
+          <h2 className="font-serif text-3xl font-semibold mb-2">Importação</h2>
+          <p className="text-stone-500 font-light">
+            Importe as transações da plataforma
+          </p>
+        </div>
       </div>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <label>Image: </label>
+        <input type="file" {...register('thumbnail')} />
+        <button type="submit">Enviar</button>
+      </form>
     </>
   )
 }
