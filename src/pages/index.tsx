@@ -18,7 +18,7 @@ const columns: ColumnDef<
     header: 'Produto'
   },
   {
-    accessorKey: 'seller.name',
+    accessorKey: 'creator.name',
     header: 'Criador'
   },
   {
