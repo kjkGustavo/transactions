@@ -1,9 +1,14 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { useForm } from 'react-hook-form'
-import { trpc } from '../../utils/trpc'
+import { SubmitHandler, useForm } from 'react-hook-form'
 
-function getBase64(file: File) {
+import { trpc } from '~/utils/trpc'
+
+type FormParams = {
+  thumbnail: File
+}
+
+function getBase64(file: File): Promise<string | ArrayBuffer | null> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.readAsDataURL(file)
@@ -16,21 +21,15 @@ const Import: NextPage = () => {
   const { mutateAsync: uploadTransaction } =
     trpc.useMutation('transaction.upload') // TODO: On success return
 
-  const { register, handleSubmit, setValue } = useForm()
+  const { register, handleSubmit } = useForm<FormParams>()
 
-  const onChangeFile = async (e: React.FormEvent<HTMLInputElement>) => {
-    if (!e.currentTarget?.files?.[0]) return
-    setValue('thumbnail', await getBase64(e.currentTarget?.files?.[0]))
-  }
+  const onSubmit: SubmitHandler<FormParams> = async ({ thumbnail }) => {
+    const file = await getBase64(thumbnail)
 
-  const onSubmit = async (e) => {
     await uploadTransaction({
-      transactionFile: e.thumbnail
+      transactionFile: file as string
     })
-    console.log(e.thumbnail)
   }
-
-  // TODO: refactor form with submit type
 
   return (
     <>
@@ -38,7 +37,6 @@ const Import: NextPage = () => {
         <title>Challenge</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
       <div className="font-poppins h-screen w-screen">
         <main className="container mx-auto">
           <div className="flex justify-between items-center mb-14">
@@ -53,12 +51,8 @@ const Import: NextPage = () => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <label>Image: </label>
-            <input id="fileInput" type="file" onChange={onChangeFile} />
-            <input
-              type="hidden"
-              {...register('thumbnail', { required: true })}
-            />
-            <button type="submit">Teste</button>
+            <input type="file" {...register('thumbnail')} />
+            <button type="submit">Enviar</button>
           </form>
         </main>
       </div>
