@@ -1,13 +1,10 @@
+import Logo from './Logo'
+
 const Header = () => (
   <header className="bg-white shadow-sm py-4 fixed w-full px-10">
     <div className="container flex w-full justify-between">
       <div>
-        <h1 className="text-black bg-bold uppercase font-bold">
-          trans
-          <span className="color-lime-400 font-extrabold border-b-2 border-lime-400">
-            ações
-          </span>
-        </h1>
+        <Logo />
       </div>
       <nav className="flex gap-8">
         <ul>
