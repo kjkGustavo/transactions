@@ -1,11 +1,12 @@
 import { ColumnDef } from '@tanstack/react-table'
-import type { GetServerSidePropsContext, NextPage } from 'next'
+import type { GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
 
 import Table from '~/components/Table'
 
 import { Seller, Transaction, Type as TransactionType } from '@prisma/client'
 import { trpc } from '~/utils/trpc'
+import type { NextPageWithLayout } from '../_app'
 
 const renderType: { [key in TransactionType]: string } = {
   CREATOR_SALE: 'Venda produtor',
@@ -53,9 +54,11 @@ const columns: ColumnDef<
   }
 ]
 
-const ListTransactions: NextPage = ({ productId }) => {
+const ListTransactions: NextPageWithLayout<{
+  productId: string | string[]
+}> = ({ productId }) => {
   const { data, isLoading } = trpc.useQuery([
-    'transaction.getAllOfProducts',
+    'product.getTransactionsOfProducts',
     {
       productId: parseInt(productId as string)
     }

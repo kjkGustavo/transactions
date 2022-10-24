@@ -1,8 +1,8 @@
-import type { NextPage } from 'next'
 import Head from 'next/head'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
 import { trpc } from '~/utils/trpc'
+import type { NextPageWithLayout } from '../_app'
 
 type FormParams = { thumbnail: FileList }
 
@@ -15,7 +15,7 @@ function getBase64(file: File): Promise<string | ArrayBuffer | null> {
   })
 }
 
-const Import: NextPage = () => {
+const Import: NextPageWithLayout = () => {
   const { mutateAsync: uploadTransaction } =
     trpc.useMutation('transaction.upload') // TODO: On success return
 
