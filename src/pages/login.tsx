@@ -43,7 +43,7 @@ const Login: NextPage = () => {
     }
 
     if (response?.url) {
-      return push(response.url)
+      return push('/')
     }
   }
 

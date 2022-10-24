@@ -39,12 +39,11 @@ const Header = () => {
   const { pathname, push } = useRouter()
 
   const logout = async () => {
-    const data = await signOut({
-      redirect: false,
-      callbackUrl: '/login'
+    await signOut({
+      redirect: false
     })
 
-    push(data?.url)
+    push('/login')
   }
 
   return (
