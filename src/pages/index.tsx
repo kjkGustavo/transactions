@@ -1,5 +1,4 @@
 import { ColumnDef } from '@tanstack/react-table'
-import type { NextPage } from 'next'
 import Head from 'next/head'
 
 import Table from '~/components/Table'
@@ -8,6 +7,7 @@ import { Product, Seller } from '@prisma/client'
 import { trpc } from '~/utils/trpc'
 import Action from '../components/Action'
 import StatisticCard from '../components/StatisticCard'
+import type { NextPageWithLayout } from './_app'
 
 const columns: ColumnDef<
   Product & {
@@ -31,7 +31,7 @@ const columns: ColumnDef<
   }
 ]
 
-const Home: NextPage = () => {
+const Home: NextPageWithLayout = () => {
   const { data, isLoading } = trpc.useQuery(['product.getAll'])
 
   return (
@@ -40,7 +40,6 @@ const Home: NextPage = () => {
         <title>Challenge</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
       <div className="flex flex-col md:flex-row justify-between items-center">
         <div>
           <h2 className="font-serif text-xl md:text-3xl font-semibold mb-2">

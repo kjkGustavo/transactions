@@ -4,10 +4,12 @@ import { withTRPC } from '@trpc/next'
 import { NextPage } from 'next'
 import type { AppProps, AppType } from 'next/app'
 import superjson from 'superjson'
-import Layout from '../components/Layout'
-import { AppRouter } from '../server/router'
-import '../styles/globals.css'
-import getBaseUrl from '../utils/get-base-url'
+
+import Layout from '~/components/Layout'
+import { AppRouter } from '~/server/router'
+
+import '~/styles/globals.css'
+import getBaseUrl from '~/utils/get-base-url'
 
 export type NextPageWithLayout<
   TProps = Record<string, unknown>,
