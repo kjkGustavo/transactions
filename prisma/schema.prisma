@@ -39,3 +39,11 @@ model Product {
   sellerId    Int
   Transaction Transaction[]
 }
+
+model Account {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
