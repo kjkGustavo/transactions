@@ -18,7 +18,8 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"]
-    }
+    },
+    "types": ["@types/jest"]
   },
   "include": [
     "next-env.d.ts",

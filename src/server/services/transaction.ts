@@ -1,4 +1,5 @@
 import { Type } from "@prisma/client";
+import { z } from "zod";
 import { prisma } from "~/server/db/prisma";
 import productService from "./product";
 import sellerService from "./seller";
@@ -18,18 +19,36 @@ const transactionTypeEnum = {
   4: Type.COMMISSION_RECEIVED,
 };
 
+const TransactionSchema = z.object({
+  type: z.number(),
+  date: z.any(),
+  productName: z.string(),
+  amount: z.string().min(1),
+  sellerName: z.string().min(1)
+})
+
+const parseToTransaction = (transactionLine: string) => {
+  const transaction = {
+    type: parseInt(transactionLine.charAt(0)),
+    date: new Date(transactionLine.substring(1, 26)),
+    productName: transactionLine.substring(26, 56).trimEnd(),
+    amount: transactionLine.substring(56, 66),
+    sellerName: transactionLine.substring(66).trimEnd(),
+  };
+
+  if(!TransactionSchema.safeParse(transaction).success) {
+    throw new Error('The file formatting is invalid, try again')
+  }
+
+  return transaction;
+}
+
 const parseTransactions = (transactionFile: string): TransactionDTO[] => {
   const transactionsChunks = transactionFile
     .split("\n")
     .filter((line) => line.length > 0);
 
-  const transactionsData = transactionsChunks.map((transaction) => ({
-    type: parseInt(transaction.charAt(0)),
-    date: new Date(transaction.substring(1, 26)),
-    productName: transaction.substring(26, 56).trimEnd(),
-    amount: transaction.substring(56, 66),
-    sellerName: transaction.substring(66).trimEnd(),
-  }));
+  const transactionsData = transactionsChunks.map((transaction) => parseToTransaction(transaction));
 
   return transactionsData;
 };
@@ -46,9 +65,8 @@ const createTransactionsRelations = async (transactions: TransactionDTO[]) => {
           transaction.productName,
           seller.id
         );
-        const date = new Date(transaction.date);
         return {
-          date,
+          date: transaction.date,
           amount: transaction.amount,
           productId: product.id,
           sellerId: seller.id,
@@ -71,23 +89,16 @@ const createTransactions = async (transactionFile: string) => {
   });
 };
 
-const getAllOfProducts = async (productId: number) => {
-  return prisma.transaction.findMany({
-    include: {
-      seller: true,
-    },
-    where: {
-      productId,
-    },
-    orderBy: {
-      date: "desc",
-    },
-  });
-};
+const getAllTransactions = async () => {
+  return prisma.transaction.findMany();
+}
 
 const transactionService = {
   createTransactions,
-  getAllOfProducts,
+  parseTransactions,
+  parseToTransaction,
+  createTransactionsRelations,
+  getAllTransactions
 };
 
 export default transactionService;

@@ -1,11 +1,14 @@
 import * as trpc from '@trpc/server'
 import { CreateNextContextOptions } from '@trpc/server/adapters/next'
+import { CreateContextOptions } from 'vm';
 
-import { prisma } from '../db/prisma'
+export async function createContextInner(_opts: CreateContextOptions) {
+  return {};
+}
+
 
 export const createContext = async (opts?: CreateNextContextOptions) => {
   return {
-    prisma,
     req: opts?.req,
     res: opts?.res,
   }

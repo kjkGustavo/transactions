@@ -19,9 +19,28 @@ const findByNameOrCreate = (name: string, creator: number) => {
   })
 }
 
+const getProductWithTransactions = async (productId: number) => {
+  return prisma.product.findFirst({
+    include: {
+      Transaction: {
+        include: {
+          seller: true,
+        },
+        orderBy: {
+          date: "desc",
+        },
+      },
+    },
+    where: {
+      id: productId,
+    },
+  });
+};
+
 const productService = {
   getAll,
-  findByNameOrCreate
+  findByNameOrCreate,
+  getProductWithTransactions
 }
 
 export default productService;
