@@ -8,6 +8,8 @@ import superjson from 'superjson'
 
 import { AppRouter } from '~/server/router'
 
+import { Session } from 'next-auth'
+import { SessionProvider } from 'next-auth/react'
 import 'react-toastify/dist/ReactToastify.css'
 import '~/styles/globals.css'
 import getBaseUrl from '~/utils/get-base-url'
@@ -18,14 +20,18 @@ export type NextPageWithLayout<
 > = NextPage<TProps, TInitialProps> & {
   getLayout?: (page: React.ReactElement) => React.ReactNode
 }
-type AppPropsWithLayout = AppProps & {
+
+type AppPropsWithLayout = AppProps<{
+  session: Session
+}> & {
   Component: NextPageWithLayout
 }
+
 const App = (({ Component, pageProps }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout ?? ((page) => page)
 
   return getLayout(
-    <>
+    <SessionProvider session={pageProps.session}>
       <Component {...pageProps} />
       <ToastContainer
         position="top-right"
@@ -35,7 +41,7 @@ const App = (({ Component, pageProps }: AppPropsWithLayout) => {
         draggable
         theme="light"
       />
-    </>
+    </SessionProvider>
   )
 }) as AppType
 

@@ -6,9 +6,12 @@ import type {
 import { ColumnDef } from '@tanstack/react-table'
 import type { GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
+import { ReactElement } from 'react'
 
+import Layout from '~/components/Layout'
 import Table from '~/components/Table'
 
+import protectedRoutes from '~/utils/protected-route'
 import { trpc } from '~/utils/trpc'
 import type { NextPageWithLayout } from '../_app'
 
@@ -109,17 +112,24 @@ const ListTransactions: NextPageWithLayout<{
   )
 }
 export default ListTransactions
-export async function getServerSideProps({
-  params
-}: GetServerSidePropsContext) {
-  if (!params?.productId) {
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await protectedRoutes(context)
+
+  if (!context.params?.productId) {
     return {
       notFound: true
     }
   }
+
   return {
     props: {
-      productId: params.productId
+      session,
+      productId: context.params.productId
     }
   }
+}
+
+ListTransactions.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>
 }

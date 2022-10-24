@@ -1,3 +1,4 @@
+import { GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { ReactElement } from 'react'
@@ -6,6 +7,7 @@ import { toast } from 'react-toastify'
 
 import { trpc } from '~/utils/trpc'
 import Layout from '../../components/Layout'
+import protectedRoutes from '../../utils/protected-route'
 import type { NextPageWithLayout } from '../_app'
 type FormParams = { thumbnail: FileList }
 function getBase64(file: File): Promise<string | ArrayBuffer | null> {
@@ -65,7 +67,7 @@ const Import: NextPageWithLayout = () => {
           <input type="file" {...register('thumbnail')} />
         </div>
         <button
-          className="bg-lime-400 border-lime-500 border-[1px] hover:bg-lime-300 transition-all duration-300 font-light px-4 py-2 leading-4 rounded-md text-sm box-border"
+          className="bg-lime-400 border-lime-500 border hover:bg-lime-300 transition-all duration-300 font-light px-4 py-2 leading-4 rounded-md text-sm box-border"
           type="submit"
         >
           Enviar
@@ -75,6 +77,16 @@ const Import: NextPageWithLayout = () => {
   )
 }
 export default Import
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await protectedRoutes(context)
+
+  return {
+    props: {
+      session
+    }
+  }
+}
 
 Import.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>

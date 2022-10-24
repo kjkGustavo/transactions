@@ -4,11 +4,13 @@ import Head from 'next/head'
 import Table from '~/components/Table'
 
 import { Product, Seller } from '@prisma/client'
+import { GetServerSidePropsContext } from 'next'
 import { ReactElement } from 'react'
 import { trpc } from '~/utils/trpc'
 import Action from '../components/Action'
 import Layout from '../components/Layout'
 import StatisticCard from '../components/StatisticCard'
+import protectedRoutes from '../utils/protected-route'
 import type { NextPageWithLayout } from './_app'
 
 const columns: ColumnDef<
@@ -71,6 +73,16 @@ const Home: NextPageWithLayout = () => {
 }
 
 export default Home
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await protectedRoutes(context)
+
+  return {
+    props: {
+      session
+    }
+  }
+}
 
 Home.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>
