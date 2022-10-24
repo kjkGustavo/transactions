@@ -1,10 +1,14 @@
+import type {
+  Seller,
+  Transaction,
+  Type as TransactionType
+} from '@prisma/client'
 import { ColumnDef } from '@tanstack/react-table'
 import type { GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
 
 import Table from '~/components/Table'
 
-import { Seller, Transaction, Type as TransactionType } from '@prisma/client'
 import { trpc } from '~/utils/trpc'
 import type { NextPageWithLayout } from '../_app'
 
@@ -14,7 +18,6 @@ const renderType: { [key in TransactionType]: string } = {
   COMMISSION_PAID: 'Comissão paga',
   COMMISSION_RECEIVED: 'Comissão recebida'
 }
-
 const columns: ColumnDef<
   Transaction & {
     seller: Seller
@@ -42,9 +45,9 @@ const columns: ColumnDef<
   },
   {
     accessorKey: 'amount',
-    header: 'Quantidade',
+    header: 'Valor',
     cell: ({ getValue }) => {
-      const formattedValue = +getValue<number>()
+      const formattedValue = +getValue<number>() / 100
 
       return formattedValue.toLocaleString('pt-br', {
         style: 'currency',
@@ -53,7 +56,6 @@ const columns: ColumnDef<
     }
   }
 ]
-
 const ListTransactions: NextPageWithLayout<{
   productId: string | string[]
 }> = ({ productId }) => {
@@ -64,6 +66,15 @@ const ListTransactions: NextPageWithLayout<{
     }
   ])
 
+  const totalAmount = data?.Transaction.reduce((acc, item) => {
+    if (item.type === 'COMMISSION_PAID') {
+      acc - Number(+item.amount / 100)
+      return acc
+    }
+
+    return acc + Number(+item.amount / 100)
+  }, 0)
+
   return (
     <>
       <Head>
@@ -73,21 +84,31 @@ const ListTransactions: NextPageWithLayout<{
       <div className="flex justify-between items-center mb-14">
         <div>
           <h2 className="font-serif text-3xl font-semibold mb-2">
-            Transações de {'DESENVOLVIMENTO WEB COMPLETO'}
+            Transações de {data?.name}
           </h2>
           <p className="text-stone-500 font-light">
-            Importe as transações da plataforma
+            Últimas transações realizadas
           </p>
         </div>
       </div>
 
-      <Table columns={columns} data={data || []} isLoading={isLoading} />
+      <Table
+        columns={columns}
+        data={data?.Transaction || []}
+        isLoading={isLoading}
+      />
+
+      <p className="w-full flex justify-end text-stone-500 font-light mt-5">
+        Soma:{' '}
+        {totalAmount?.toLocaleString('pt-br', {
+          style: 'currency',
+          currency: 'BRL'
+        })}
+      </p>
     </>
   )
 }
-
 export default ListTransactions
-
 export async function getServerSideProps({
   params
 }: GetServerSidePropsContext) {
@@ -96,7 +117,6 @@ export async function getServerSideProps({
       notFound: true
     }
   }
-
   return {
     props: {
       productId: params.productId
