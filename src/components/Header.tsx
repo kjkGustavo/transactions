@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+import { signOut } from 'next-auth/react'
 import Link, { LinkProps } from 'next/link'
 import { useRouter } from 'next/router'
 
@@ -35,7 +36,16 @@ const HeaderLink = ({ href, children, active }: HeaderLinkProps) => {
 }
 
 const Header = () => {
-  const { pathname } = useRouter()
+  const { pathname, push } = useRouter()
+
+  const logout = async () => {
+    const data = await signOut({
+      redirect: false,
+      callbackUrl: '/login'
+    })
+
+    push(data?.url)
+  }
 
   return (
     <header className="bg-white shadow-sm py-4 fixed w-full px-10">
@@ -57,7 +67,9 @@ const Header = () => {
           </ul>
         </nav>
         <div className="flex">
-          <span>Olá, admin</span>
+          <button className="text-red-500 hover:text-red-800" onClick={logout}>
+            Sair
+          </button>
         </div>
       </div>
     </header>
