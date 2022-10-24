@@ -6,7 +6,6 @@ import type { AppProps, AppType } from 'next/app'
 import { toast, ToastContainer } from 'react-toastify'
 import superjson from 'superjson'
 
-import Layout from '~/components/Layout'
 import { AppRouter } from '~/server/router'
 
 import 'react-toastify/dist/ReactToastify.css'
@@ -23,7 +22,7 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout
 }
 const App = (({ Component, pageProps }: AppPropsWithLayout) => {
-  const getLayout = Component.getLayout ?? ((page) => <Layout>{page}</Layout>)
+  const getLayout = Component.getLayout ?? ((page) => page)
 
   return getLayout(
     <>

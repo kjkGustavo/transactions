@@ -4,8 +4,10 @@ import Head from 'next/head'
 import Table from '~/components/Table'
 
 import { Product, Seller } from '@prisma/client'
+import { ReactElement } from 'react'
 import { trpc } from '~/utils/trpc'
 import Action from '../components/Action'
+import Layout from '../components/Layout'
 import StatisticCard from '../components/StatisticCard'
 import type { NextPageWithLayout } from './_app'
 
@@ -33,6 +35,7 @@ const columns: ColumnDef<
 
 const Home: NextPageWithLayout = () => {
   const { data, isLoading } = trpc.useQuery(['product.getAll'])
+  const analyitcs = trpc.useQuery(['status.getAnalytics'])
 
   return (
     <>
@@ -49,16 +52,16 @@ const Home: NextPageWithLayout = () => {
             Gerencie todas as transações por produto da plataforma
           </p>
         </div>
-        <div>
-          <Action href="/transactions/import">Importar</Action>
-        </div>
       </div>
       <div className="grid md:grid-flow-col gap-4 my-6">
-        <StatisticCard title="Produtos" value={'5'} />
-        <StatisticCard title="Vendedores" value={'5'} />
+        <StatisticCard title="Produtos" value={analyitcs?.data?.products} />
+        <StatisticCard title="Vendedores" value={analyitcs?.data?.sellers} />
         <StatisticCard
           title="Total movimentado"
-          value={'R$ 500,50'}
+          value={analyitcs?.data?.transactions.toLocaleString('pt-br', {
+            style: 'currency',
+            currency: 'BRL'
+          })}
           important
         />
       </div>
@@ -68,3 +71,7 @@ const Home: NextPageWithLayout = () => {
 }
 
 export default Home
+
+Home.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>
+}

@@ -2,14 +2,18 @@ import clsx from 'clsx'
 
 type StatisticCardProps = {
   title: string
-  value: string
+  value?: string | number
   important?: boolean
 }
 
-const StatisticCard = ({ title, value, important }: StatisticCardProps) => (
+const StatisticCard = ({
+  title,
+  value = '...',
+  important
+}: StatisticCardProps) => (
   <div
     className={clsx(
-      important && 'bg-lime-900',
+      important && 'bg-[#1a2e03]',
       !important && 'bg-zinc-100',
       'rounded-md px-4 py-2'
     )}
