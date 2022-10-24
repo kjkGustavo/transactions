@@ -1,9 +1,11 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import { ReactElement } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
 import { trpc } from '~/utils/trpc'
+import Layout from '../../components/Layout'
 import type { NextPageWithLayout } from '../_app'
 type FormParams = { thumbnail: FileList }
 function getBase64(file: File): Promise<string | ArrayBuffer | null> {
@@ -73,3 +75,7 @@ const Import: NextPageWithLayout = () => {
   )
 }
 export default Import
+
+Import.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>
+}
