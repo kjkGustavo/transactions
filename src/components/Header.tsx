@@ -15,10 +15,6 @@ const routeLinks = [
     href: '/'
   },
   {
-    label: 'Vendedores',
-    href: '/sellers'
-  },
-  {
     label: 'Importar',
     href: '/transactions/import'
   }
@@ -47,8 +43,8 @@ const Header = () => {
         <div>
           <Logo />
         </div>
-        <nav className="flex gap-8">
-          <ul>
+        <nav>
+          <ul className="flex gap-8">
             {routeLinks.map(({ label, href }) => (
               <HeaderLink
                 href={href}
