@@ -62,7 +62,7 @@ const ListTransactions: NextPageWithLayout<{
     {
       productId: parseInt(productId as string)
     }
-  ]) // TODO: on error on transactions
+  ])
 
   return (
     <>

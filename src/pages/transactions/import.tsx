@@ -1,11 +1,11 @@
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
 import { trpc } from '~/utils/trpc'
 import type { NextPageWithLayout } from '../_app'
-
 type FormParams = { thumbnail: FileList }
-
 function getBase64(file: File): Promise<string | ArrayBuffer | null> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -16,19 +16,30 @@ function getBase64(file: File): Promise<string | ArrayBuffer | null> {
 }
 
 const Import: NextPageWithLayout = () => {
-  const { mutateAsync: uploadTransaction } =
-    trpc.useMutation('transaction.upload') // TODO: On success return
+  const router = useRouter()
+
+  const { mutateAsync: uploadTransaction } = trpc.useMutation(
+    'transaction.upload',
+    {
+      onSuccess: () => {
+        toast.success('Transações importadas com sucesso')
+
+        router.push('/')
+      },
+      onError: (error) => {
+        toast.error('Erro ao importar transações') // TODO: Backend message
+      }
+    }
+  )
 
   const { register, handleSubmit } = useForm<FormParams>()
 
   const onSubmit: SubmitHandler<FormParams> = async ({ thumbnail }) => {
     const file = await getBase64(thumbnail[0])
-
     await uploadTransaction({
       transactionFile: file as string
     })
   }
-
   return (
     <>
       <Head>
@@ -43,13 +54,22 @@ const Import: NextPageWithLayout = () => {
           </p>
         </div>
       </div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <label>Image: </label>
-        <input type="file" {...register('thumbnail')} />
-        <button type="submit">Enviar</button>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-row justify-between items-center"
+      >
+        <div>
+          <label>Image: </label>
+          <input type="file" {...register('thumbnail')} />
+        </div>
+        <button
+          className="bg-lime-400 border-lime-500 border-[1px] hover:bg-lime-300 transition-all duration-300 font-light px-4 py-2 leading-4 rounded-md text-sm box-border"
+          type="submit"
+        >
+          Enviar
+        </button>
       </form>
     </>
   )
 }
-
 export default Import
