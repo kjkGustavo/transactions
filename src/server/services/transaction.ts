@@ -53,31 +53,33 @@ const parseTransactions = (transactionFile: string): TransactionDTO[] => {
   return transactionsData;
 };
 
-const createTransactionsRelations = async (transactions: TransactionDTO[]) => {
-  const transactionsRelations = await Promise.all(
-    transactions
-      .sort((a, b) => a.type - b.type)
-      .map(async (transaction) => {
-        const seller = await sellerService.findByNameOrCreate(
-          transaction.sellerName
-        );
-        const product = await productService.findByNameOrCreate(
-          transaction.productName,
-          seller.id
-        );
-        return {
-          date: transaction.date,
-          amount: transaction.amount,
-          productId: product.id,
-          sellerId: seller.id,
-          type: transactionTypeEnum[
-            transaction.type as keyof typeof transactionTypeEnum
-          ],
-        };
-      })
-  );
+const createTransactionsRelations = async (transactionsLines: TransactionDTO[]) => {
+  const sortTypeTransactions = transactionsLines.sort((a, b) => a.type - b.type);
+  const transactions = []
 
-  return transactionsRelations;
+  for (const transaction of sortTypeTransactions) {
+    const seller = await sellerService.findByNameOrCreate(
+      transaction.sellerName
+    );
+    const product = await productService.findByNameOrCreate(
+      transaction.productName,
+      seller.id
+    );
+
+    transactions.push({
+      date: transaction.date,
+      amount: transaction.amount,
+      productId: product.id,
+      sellerId: seller.id,
+      type: transactionTypeEnum[
+        transaction.type as keyof typeof transactionTypeEnum
+      ],
+    })
+  }
+  // TODO: Go back to using Promise.all to create transactions relations
+
+
+  return transactions;
 };
 
 const createTransactions = async (transactionFile: string) => {

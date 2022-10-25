@@ -26,7 +26,7 @@ services:
       db:
         condition: service_healthy
     working_dir: /app
-    command: bash -c "npx prisma migrate deploy && npx prisma db seed && npm run start"
+    command: bash -c "npm run prisma migrate deploy && npm run prisma db seed && npm run start"
     environment:
       NODE_ENV: production
       DATABASE_URL: ${DATABASE_URL}
