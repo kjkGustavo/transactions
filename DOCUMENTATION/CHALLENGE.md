@@ -53,7 +53,7 @@ Sua aplicação deve:
 
 Sua aplicação não precisa, mas ficaremos impressionados se ela:
 
-1. [ ] Tiver documentação das APIs do backend.
+1. [x] Tiver documentação das APIs do backend.
 2. [x] Utilizar docker-compose para orquestar os serviços num todo.
 3. [ ] Ter testes de integração ou end-to-end.
 4. [ ] Tiver toda a documentação escrita em inglês fácil de entender.
