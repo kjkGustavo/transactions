@@ -36,8 +36,8 @@ Use the file [sales.txt](DOCUMENTATION/sales.txt) to upload.
 
 ## Documentations
 
-- [Desafio](./CHALLENGE.md) - Challenge
-- [API Routes](./API.md) - API docs
+- [Desafio](./DOCUMENTATION/CHALLENGE.md) - Challenge
+- [API Routes](./DOCUMENTATION/API.md) - API docs
 
 ## Getting Started
 
