@@ -102,4 +102,4 @@ Gustavo Lima - [@kjkGustavo](https://twitter.com/kjkGustavo) - contato@gustavoli
 
 Project Link: [https://github.com/kjkGustavo/transactions](https://github.com/kjkGustavo/transactions)
 
-[product-screenshot]: DOCUMENTATION/dashboard.png
+[product-screenshot]: DOCUMENTATION/images/dashboard.png
