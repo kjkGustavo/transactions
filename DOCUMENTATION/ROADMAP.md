@@ -40,6 +40,7 @@ Tecnologias escolhidas para aplicação e motivos da escolha
 
 1. Durante o desafio tive um problema com a minha escolha do tRPC.io, ele não tinha suporte para upload de arquivos(multipart/form-data) e acabei seguindo com a comunicação de arquivos através do Base64 para não perder o uso de tipagens e não criar apenas uma rota especifíca para upload(do nextjs api). Sendo assim as requests ficaram um pouco maior. Em um caso real e com mais tempo tentaria implementar(o multipart/form-data) no tRPC.io.
 2. Resolvi trabalhar com os valores das transações em `String` para evitar problemas de calculo com centavos.
+3. De última hora tive um problema para importação das transações com o `Promise.all` e decide trocar para `for of`. Assim que possível vou apresentar uma nova soluçaõ.
 
 ## Documentações
 
@@ -70,6 +71,8 @@ _O processo de desenvolvimento da aplicação_
 - "Dockerizando" a aplicação
 
 ## Conclusão
+
+Tests: Creio que apenas o de `transactions` que ficou legal os casos de test, os outros não foi implementado.
 
 Desenvolvimento: Gostei do resultado final, apesar de não ter implementado o upload corretamente sem base64, acredito que nas escolhas gerais de tecnologias foi bastante relevante e produtivas.
 

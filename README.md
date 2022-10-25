@@ -51,7 +51,7 @@ Prerequisites
 - Docker
 - docker-compose
 
-1. Copy `.env.example` to `.env` and configure if necessary.
+1. Copy `.env.example` to `.env` and configure **if necessary**.
 2. Run `docker-compose up -d`
 3. Running on `localhost:80` ✨
 
@@ -68,7 +68,7 @@ Prerequisites
 - [npm](https://www.npmjs.com/)
 - [PostgreSQL](https://www.postgresql.org/) or use [docker container](https://hub.docker.com/_/postgres) 🙏
 
-1. Copy `.env.example` to `.env` and configure if necessary.
+1. Copy `.env.example` to `.env`.
 2. `yarn` or `npm install`
 3. `yarn prisma generate`
 4. `yarn prisma migrate deploy`
@@ -79,6 +79,12 @@ Admin account:
 
 - Username: admin
 - Password: admin@123
+
+#### Test
+
+1. Check `.env.test` and configure **if necessary**.
+2. `yarn test:docker`
+3. Running... ✨
 
 ## Roadmap
 

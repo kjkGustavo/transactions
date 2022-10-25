@@ -53,7 +53,7 @@ describe("parse input transaction file", () => {
 })
 
 describe("transaction trpc", () => {
-  it("should caller transaction.upload", async () => {
+  it("should call caller transaction.upload", async () => {
     const ctx = await createContextInner({});
     const caller = appRouter.createCaller(ctx);
   
@@ -69,7 +69,7 @@ describe("transaction trpc", () => {
     expect(transactions[0]).toHaveProperty('date');
     expect(transactions[0]).toHaveProperty('amount');
   })
-  it("should caller transaction.getAll", async () => {
+  it("should call caller transaction.getAll", async () => {
     const ctx = await createContextInner({});
     const caller = appRouter.createCaller(ctx);
   
@@ -80,5 +80,22 @@ describe("transaction trpc", () => {
     expect(transactions[0]).toHaveProperty('type');
     expect(transactions[0]).toHaveProperty('date');
     expect(transactions[0]).toHaveProperty('amount');
+  })
+})
+
+describe("product trpc with transactions", () => {
+  it("should call caller getTransactionsOfProducts", async () => {
+    const ctx = await createContextInner({});
+    const caller = appRouter.createCaller(ctx);
+
+    const products = await caller.query('product.getAll')
+  
+    const product = await caller.query('product.getTransactionsOfProducts', {
+      productId: products[0]?.id
+    });
+
+    expect(product).toHaveProperty('name')
+    expect(product).toHaveProperty('Transaction')
+    expect(product?.Transaction).toBeInstanceOf(Array);
   })
 })
