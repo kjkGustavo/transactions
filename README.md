@@ -10,7 +10,7 @@
     <br />
     <a href="/DOCUMENTATION/CHALLENGE.md">Challenge</a>
     ·
-    <a href="/DOCUMENTATION/CHALLENGE.md">Roadmap</a>
+    <a href="/DOCUMENTATION/ROADMAP.md">Roadmap</a>
   </p>
 </div>
 
@@ -34,7 +34,10 @@ Use the file [sales.txt](DOCUMENTATION/sales.txt) to upload.
 - [react-hook-form](https://react-hook-form.com/)
 - [NextAuth](https://next-auth.js.org/)
 
-<!-- GETTING STARTED -->
+## Documentations
+
+- [Desafio](./CHALLENGE.md) - Challenge
+- [API Routes](./API.md) - API docs
 
 ## Getting Started
 
